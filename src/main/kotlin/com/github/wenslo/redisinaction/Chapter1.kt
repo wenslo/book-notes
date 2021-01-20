@@ -33,7 +33,7 @@ class Chapter1 {
         assert(votes.toInt() > 1)
 
         println("The currently highest-scoring articles are:")
-        var articles: List<Map<String, String>> = getArticles(conn, 1)
+        var articles: List<Map<String, String>> = getArticles(conn, 0)
         printArticles(articles)
         assert(articles.isNotEmpty())
 
@@ -49,23 +49,26 @@ class Chapter1 {
         val voted = "voted:${articleId}"
         conn.sadd(voted, user)
         conn.expire(voted, ONE_WEEK_IN_SECONDS)
-        val now = (System.currentTimeMillis() / 1000).toString()
-        val article = "article:$articleId";
+        val now = (System.currentTimeMillis() / 1000)
+        val article = "article:$articleId"
         conn.hmset(
             article, mutableMapOf(
                 Pair("title", title),
                 Pair("link", link),
                 Pair("poster", user),
-                Pair("time", now),
+                Pair("time", now.toString()),
                 Pair("votes", "1")
             )
         )
-        return articleId;
+        conn.zadd("score:", now + VOTE_SCORE, article);
+        conn.zadd("time:", now.toDouble(), article);
+
+        return articleId
     }
 
     fun articleVote(conn: Jedis, user: String, article: String) {
         val cutoff = (System.currentTimeMillis() / 1000) - ONE_WEEK_IN_SECONDS
-        if (conn.zscore("time:", article) < cutoff) {
+        if ((conn.zscore("time:", article) ?: 0.0) < cutoff) {
             return
         }
         var articleId = article.substring(article.indexOf(":") + 1)
