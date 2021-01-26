@@ -101,6 +101,74 @@ class Chapter2 {
     /****************************************** 购物车 end **************************************/
 
     /****************************************** 数据行缓存 start *********************************/
+
+    fun scheduleRowCache(conn: Jedis, rowId: String, delay: Double) {
+        conn.zadd("delay:", delay, rowId)
+        conn.zadd("schedule:", System.currentTimeMillis().toDouble(), rowId)
+    }
+
+    fun cacheRows(conn: Jedis) {
+        while (!QUIT) {
+            val next = conn.zrangeWithScores("schedule:", 0, 0)
+            val now = System.currentTimeMillis()
+            if (next != null && next.first().score > now) {
+                Thread.sleep(50)
+                continue
+            }
+            val rowId = next.first().element
+            val delay = conn.zscore("delay:", rowId);
+            if (delay < 0) {
+                conn.zrem("delay:", rowId)
+                conn.zrem("schedule:", rowId)
+                conn.del("inv:$rowId")
+                continue
+            }
+            val row = """{"content":"123"}"""
+            conn.zadd("schedule:", now + delay, rowId)
+            conn.set("inv:$row", row)
+        }
+    }
+
+    /****************************************** 数据行缓存 end *********************************/
+
+    /****************************************** 网页分析 start *********************************/
+    fun updateToken2(conn: Jedis, token: String, user: String, item: String?) {
+        val currentTimeMillis = System.currentTimeMillis()
+        conn.hset("login:", token, user)
+        conn.zadd("recent:", currentTimeMillis.toDouble(), token)
+        if (item != null) {
+            conn.zadd("viewed:$token", currentTimeMillis.toDouble(), item)
+            conn.zremrangeByRank("viewed:${token}", 0, -26)
+            conn.zincrby("viewed:", -1.0, item)
+        }
+    }
+
+    fun rescaleViewed(conn: Jedis) {
+        while (!QUIT) {
+            conn.zremrangeByRank("viewed:", 0, -20001)
+            conn.zinterstore("viewed:", "viewed:0.5")
+            Thread.sleep(300)
+        }
+    }
+
+    fun canCache(conn: Jedis, request: String): Boolean {
+        val itemId = extractItemId(request);
+        if (itemId.isNotBlank() or isDynamic(request)) {
+            return false
+        }
+        val rank = conn.zrank("viewed:", itemId)
+        return rank != null && rank.toInt() < 10000
+    }
+
+    private fun isDynamic(request: String): Boolean {
+        return true
+    }
+
+    private fun extractItemId(request: String): String {
+        return request
+    }
+
+    /****************************************** 网页分析 end *********************************/
 }
 
 fun main() {
