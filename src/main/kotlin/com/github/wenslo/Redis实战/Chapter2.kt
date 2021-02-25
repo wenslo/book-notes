@@ -1,4 +1,4 @@
-package com.github.wenslo.redisinaction
+package com.github.wenslo.Redis实战
 
 import redis.clients.jedis.Jedis
 import kotlin.math.min

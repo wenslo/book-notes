@@ -1,4 +1,4 @@
-package com.github.wenslo.redisinaction
+package com.github.wenslo.Redis实战
 
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.ZParams
@@ -91,7 +91,12 @@ class Chapter1 {
         return articles
     }
 
-    fun addRemoveGroups(conn: Jedis, articleId: String, toAdd: List<String> = emptyList(), toRemove: List<String> = emptyList()) {
+    fun addRemoveGroups(
+        conn: Jedis,
+        articleId: String,
+        toAdd: List<String> = emptyList(),
+        toRemove: List<String> = emptyList()
+    ) {
         val article = "article:$articleId"
         for (group in toAdd) {
             conn.sadd("group:$group", article)
