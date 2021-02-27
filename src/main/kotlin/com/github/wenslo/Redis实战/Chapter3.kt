@@ -1,6 +1,7 @@
 package com.github.wenslo.Redis实战
 
 import redis.clients.jedis.Jedis
+import redis.clients.jedis.ZParams
 
 class Chapter3 {
     /**
@@ -96,6 +97,32 @@ class Chapter3 {
         conn.hexists("hash-key2", "num")
         conn.hincrBy("hahs-key2", "num", 1)
         conn.hexists("hash-key2", "num")
+    }
+
+    /**
+     * 有序集合
+     */
+    fun sortedSet(conn: Jedis) {
+        conn.zadd("zset-key", mutableMapOf("a" to 3.0, "b" to 2.0, "c" to 1.0))
+        conn.zcard("zset-key")
+        conn.zincrby("zset-key", 3.0, "c")
+        conn.zscore("zset-key", "b")
+        conn.zrank("zset-key", "c")
+        conn.zcount("zset-key", 0.0, 3.0)
+        conn.zrem("zset-key", "b")
+        conn.zrangeWithScores("zset-key", 0, -1)
+
+        conn.zadd("zset-1", mutableMapOf("a" to 1.0, "b" to 2.0, "c" to 3.0))
+        conn.zadd("zset-2", mutableMapOf("b" to 4.0, "c" to 1.0, "d" to 1.0))
+        conn.zinterstore("zset-i", "z-set1", "z-set2")
+        conn.zrangeWithScores("zset-i", 0, -1)
+
+        val params = ZParams().aggregate(ZParams.Aggregate.MAX)
+        conn.zunionstore("zset-u", params, "zset-1", "zset-2")
+        conn.zrangeWithScores("zset-u", 0, -1)
+        conn.zadd("set-1", mutableMapOf("a" to 0.0, "b" to 0.0))
+        conn.zunionstore("zset-u2", "zset-1", "zset-2", "set-1")
+        conn.zrangeWithScores("zset-u2", 0, -1)
     }
 }
 
