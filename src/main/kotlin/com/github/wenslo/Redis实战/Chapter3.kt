@@ -1,7 +1,10 @@
 package com.github.wenslo.Redis实战
 
 import redis.clients.jedis.Jedis
+import redis.clients.jedis.JedisPubSub
+import redis.clients.jedis.SortingParams
 import redis.clients.jedis.ZParams
+import java.util.concurrent.CountDownLatch
 
 class Chapter3 {
     /**
@@ -123,6 +126,130 @@ class Chapter3 {
         conn.zadd("set-1", mutableMapOf("a" to 0.0, "b" to 0.0))
         conn.zunionstore("zset-u2", "zset-1", "zset-2", "set-1")
         conn.zrangeWithScores("zset-u2", 0, -1)
+    }
+
+    /**
+     * 发布和订阅
+     * publish and subscribe
+     */
+    fun publisher(conn: Jedis, n: Int) {
+        Thread.sleep(1000)
+        for (i in 0..n) {
+            conn.publish("channel", "$n")
+            Thread.sleep(1000)
+        }
+    }
+
+    fun run_pubsub(conn: Jedis) {
+        val cdl = CountDownLatch(3);
+        for (i in 0..3) {
+            Thread().run { publisher(conn, 3) }
+            cdl.countDown()
+        }
+        val listener = RedisSubPubListener()
+        conn.subscribe(listener, "channel")
+    }
+
+    /**
+     * 排序
+     */
+    fun sort(conn: Jedis) {
+        conn.rpush("sort-input", "23", "15", "110", "7")
+        conn.sort("sort-input")
+        // 按字母表顺序对元素进行排序
+        conn.sort("sort-input", SortingParams().alpha())
+        conn.hset("d-7", mutableMapOf("field" to "5"))
+        conn.hset("d-15", mutableMapOf("field" to "1"))
+        conn.hset("d-23", mutableMapOf("field" to "9"))
+        conn.hset("d-110", mutableMapOf("field" to "3"))
+        conn.sort("sort-input", SortingParams().by("d-*->field"))
+        conn.sort("sort-input", SortingParams().by("d-*->field"), "d-*->field")
+    }
+
+    /**
+     * 事务
+     */
+    fun notrans(conn: Jedis) {
+        println(conn.incr("notrans:"))
+        Thread.sleep(100)
+        conn.incrBy("notrans:", -1)
+    }
+
+    fun notransTest(conn: Jedis) {
+        for (i in 0..3) {
+            Thread().run { notrans(conn) }
+        }
+        Thread.sleep(500)
+    }
+
+    fun trans(conn: Jedis) {
+        val pipelined = conn.pipelined()
+        pipelined.incr("trans:")
+        Thread.sleep(100)
+        pipelined.incrBy("trans:", -1)
+        println(pipelined.exec().get())
+    }
+
+    fun transTest(conn: Jedis) {
+        for (i in 0..3) {
+            Thread().run { trans(conn) }
+        }
+        Thread.sleep(400)
+    }
+
+    /**
+     * time to alive
+     * 过期时间
+     */
+    fun ttl(conn: Jedis) {
+        conn.set("key", "value")
+        conn.get("key")
+        conn.expire("key", 2)
+        Thread.sleep(2000)
+        conn.get("key")
+        conn.set("key", "value2")
+        conn.expire("key", 100)
+        conn.ttl("key")
+    }
+}
+
+class RedisSubPubListener : JedisPubSub() {
+    companion object {
+        var count = 0;
+    }
+
+    // 取得订阅的消息后的处理
+    override fun onMessage(channel: String, message: String) {
+        //TODO 接收订阅频道消息后，业务处理逻辑
+
+        println("$channel=$message")
+        count++
+        if (count == 4) unsubscribe()
+    }
+
+    // 初始化订阅时候的处理 
+    override fun onSubscribe(channel: String?, subscribedChannels: Int) {
+        println("$channel=$subscribedChannels");
+    }
+
+    // 取消订阅时候的处理 
+    override fun onUnsubscribe(channel: String?, subscribedChannels: Int) {
+        println("$channel=$subscribedChannels");
+    }
+
+    // 初始化按表达式的方式订阅时候的处理 
+    override fun onPSubscribe(pattern: String?, subscribedChannels: Int) {
+        println("$pattern=$subscribedChannels");
+    }
+
+    // 取消按表达式的方式订阅时候的处理 
+    override fun onPUnsubscribe(pattern: String?, subscribedChannels: Int) {
+        println("$pattern=$subscribedChannels");
+    }
+
+    // 取得按表达式的方式订阅的消息后的处理 
+    override fun onPMessage(pattern: String, channel: String, message: String) {
+        println("$pattern=$channel=$message")
     }
 }
 
