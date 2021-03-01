@@ -1,8 +1,7 @@
 package com.github.wenslo.深入理解JVM.chapter2;
 
 /**
- * @author wenhailin
- * @create 2021/3/1-11:28 上午
+ *
  */
 public class JavaVMStackSOF2 {
     public static int stackLength = 0;

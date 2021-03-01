@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     implementation(group = "redis.clients", name = "jedis", version = "3.4.1")
+    implementation(group = "cglib", name = "cglib", version = "3.3.0")
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")

@@ -1,7 +1,7 @@
 package com.github.wenslo.深入理解JVM.chapter2;
 
 /**
- * -Xss 128k
+ * -Xss160k
  */
 public class JavaVMStackSOF {
     private int stackLength = 1;
