@@ -1,0 +1,4 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<beans>
+    <bean id="myTestBean" class="com.github.wenslo.Spring源码深度解析.chapter2.MyTestBean"/>
+</beans>
