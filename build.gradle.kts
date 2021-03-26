@@ -15,10 +15,10 @@ val springVersion = "5.0.20.RELEASE"
 dependencies {
     implementation(group = "redis.clients", name = "jedis", version = "3.4.1")
     implementation(group = "cglib", name = "cglib", version = "3.3.0")
-
     // spring依赖
     implementation(group = "org.springframework", name = "spring-core", version = springVersion)
     implementation(group = "org.springframework", name = "spring-beans", version = springVersion)
+    implementation(group = "org.springframework", name = "spring-context", version = springVersion)
 
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
