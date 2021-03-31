@@ -11,6 +11,7 @@ repositories {
     mavenCentral()
 }
 val springVersion = "5.0.20.RELEASE"
+val luceneVersion = "8.4.1"
 
 dependencies {
     implementation(group = "redis.clients", name = "jedis", version = "3.4.1")
@@ -19,6 +20,18 @@ dependencies {
     implementation(group = "org.springframework", name = "spring-core", version = springVersion)
     implementation(group = "org.springframework", name = "spring-beans", version = springVersion)
     implementation(group = "org.springframework", name = "spring-context", version = springVersion)
+
+    // lucene 相关依赖
+    implementation(group = "org.apache.lucene", name = "lucene-core", version = luceneVersion)
+    implementation(group = "org.apache.lucene", name = "lucene-queryparser", version = luceneVersion)
+    implementation(group = "org.apache.lucene", name = "lucene-analyzers-common", version = luceneVersion)
+    implementation(group = "org.apache.lucene", name = "lucene-queries", version = luceneVersion)
+    implementation(group = "org.apache.lucene", name = "lucene-highlighter", version = luceneVersion)
+    implementation(group = "org.apache.lucene", name = "lucene-memory", version = luceneVersion)
+    implementation(group = "org.apache.lucene", name = "lucene-analyzers-smartcn", version = luceneVersion)
+    implementation(group = "org.wltea.ik-analyzer", name = "ik-analyzer", version = "8.4.0")
+
+
 
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
