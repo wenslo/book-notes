@@ -9,6 +9,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 val springVersion = "5.0.20.RELEASE"
 val luceneVersion = "8.4.1"
