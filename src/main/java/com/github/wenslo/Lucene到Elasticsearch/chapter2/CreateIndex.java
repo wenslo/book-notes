@@ -27,12 +27,14 @@ public class CreateIndex {
         news1.setReply(672);
 
         News news2 = new News();
+        news2.setId(2);
         news2.setTitle("陆永泉：把“轨道上的江苏”打造成引领性品牌");
         news2.setContent("江苏省委十三届九次全会及今年省两会明确提出要建设交通运输现代化示范区。牢记“争当表率、争做示范、走在前列”的重大使命，把“轨道上的江苏”打造成交通运输现代化示范区建设的引领性品牌，正当其时、意义深远。");
         news2.setReply(995);
 
 
         News news3 = new News();
+        news3.setId(3);
         news3.setTitle("沈正平：加快推进“一带一路”交汇点建设");
         news3.setContent("江苏“十四五”规划作出“基本建成具有全球影响力的产业科技创新中心、具有国际竞争力的先进制造业基地、具有世界聚合力的双向开放枢纽”的重大战略部署，与“十三五”规划相比，“一枢纽”是新增的重要目标，这是立足新发展阶段、贯彻新发展理念、构建新发展格局的新任务新要求，也是贯彻落实“争当表率、争做示范、走在前列”的使命担当，具有十分重要的意义和作用。");
         news3.setReply(1872);
@@ -44,7 +46,7 @@ public class CreateIndex {
         Directory dir = null;
         IndexWriter indexWriter = null;
         // 索引目录
-        Path indexPath = Paths.get("/Users/wen/test");
+        Path indexPath = Paths.get("/Users/wenhailin/test");
         // 开始时间
         Date start = new Date();
         try {

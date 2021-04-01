@@ -5,10 +5,10 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -20,7 +20,7 @@ import java.nio.file.Paths;
  * @create 2021/4/1-2:52 下午
  */
 public class QueryParseTest {
-    private static final String PATH = "/Users/wen/test";
+    private static final String PATH = "/Users/wenhailin/test";
 
     public static void main(String[] args) throws Exception {
         String field = "title";
@@ -63,11 +63,12 @@ public class QueryParseTest {
 //        PhraseQuery query = builder.build();
 
         // 模糊查询
-        Term term = new Term("title", "一带一路");
-        FuzzyQuery query = new FuzzyQuery(term);
+//        Term term = new Term("title", "一带一路");
+//        FuzzyQuery query = new FuzzyQuery(term);
 
         // 通配符搜索
-        
+        WildcardQuery query = new WildcardQuery(new Term(field, "一?"));
+
 
         System.out.println("Query:" + query.toString());
         TopDocs tds = searcher.search(query, 10);
