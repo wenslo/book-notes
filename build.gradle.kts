@@ -30,9 +30,11 @@ dependencies {
     implementation(group = "org.apache.lucene", name = "lucene-highlighter", version = luceneVersion)
     implementation(group = "org.apache.lucene", name = "lucene-memory", version = luceneVersion)
     implementation(group = "org.apache.lucene", name = "lucene-analyzers-smartcn", version = luceneVersion)
+    // ik分词器依赖
     implementation(group = "org.wltea.ik-analyzer", name = "ik-analyzer", version = "8.4.0")
 
-
+    // tika 依赖
+    implementation(group = "org.apache.tika", name = "tika-app", version = "1.26")
 
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
