@@ -78,3 +78,42 @@
   "publish_time": "2012-10-01",
   "description": "JavaScript技术经典名著"
 }
+
+
+
+PUT books
+{
+  "settings": {
+    "number_of_replicas": 1,
+    "number_of_shards": 3
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "language": {
+        "type": "keyword"
+      },
+      "author": {
+        "type": "keyword"
+      },
+      "price": {
+        "type": "float"
+      },
+      "year": {
+        "type": "date",
+        "format": "yyy-MM-dd"
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      }
+    }
+  }
+}
+
