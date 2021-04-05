@@ -33,4 +33,12 @@ public class FileModel {
         this.title = title;
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "FileModel{" +
+                "title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }
